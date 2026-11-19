@@ -1,0 +1,2 @@
+# The Apollo example verifies the observer's bytes against the frozen run.
+examples/apollo/CompilerExport.java text eol=lf

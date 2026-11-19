@@ -1,8 +1,8 @@
 """Resolve and clarify the declared owner of a direct-part inventory."""
 import re
 
-from candidate.retrieval.traceability import normalized_label
-from candidate.retrieval.composition import resolve_inventory_identity
+from sysml_graphrag.retrieval.traceability import normalized_label
+from sysml_graphrag.retrieval.composition import resolve_inventory_identity
 
 _POSSESSIVE = re.compile(r"['\u2019]s\s+", re.IGNORECASE)
 

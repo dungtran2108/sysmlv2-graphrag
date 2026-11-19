@@ -4,15 +4,15 @@ import hashlib
 import re
 from time import perf_counter
 
-from candidate import tree_audit
-from candidate.evaluation.budget import ChatTokenCounter, COMPOSITION_PACKING, messages_for
-from candidate.evaluation.comparators import EvidenceIndex, graph_units
-from candidate.evaluation.pilot_conditions import condition, rank_evidence
-from candidate.retrieval.composition import composition_packing_edges
-from candidate.retrieval.node_text import node_grounding_text, node_text_digest
-from candidate.retrieval.query_identity import check_query_identity
-from candidate.retrieval.routing import QueryRouter
-from candidate.retrieval.traversal import SubgraphPruner, stringify_subgraph_markdown_tree
+from sysml_graphrag import tree_audit
+from sysml_graphrag.evaluation.budget import ChatTokenCounter, COMPOSITION_PACKING, messages_for
+from sysml_graphrag.evaluation.comparators import EvidenceIndex, graph_units
+from sysml_graphrag.evaluation.pilot_conditions import condition, rank_evidence
+from sysml_graphrag.retrieval.composition import composition_packing_edges
+from sysml_graphrag.retrieval.node_text import node_grounding_text, node_text_digest
+from sysml_graphrag.retrieval.query_identity import check_query_identity
+from sysml_graphrag.retrieval.routing import QueryRouter
+from sysml_graphrag.retrieval.traversal import SubgraphPruner, stringify_subgraph_markdown_tree
 
 METHOD, CAP = 'graph_routed', 4096
 CONFIG = {

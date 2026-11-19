@@ -2,7 +2,7 @@
 import argparse
 from pathlib import Path
 
-from candidate.io import load_graph, local_models, write
+from sysml_graphrag.io import load_graph, local_models, write
 
 
 def main():
@@ -17,7 +17,7 @@ def main():
         parser.error('Supply a nonempty question.')
     graph = load_graph(args.graph)
     encoder, tokenizer = local_models(args.encoder, args.tokenizer)
-    from candidate.policy import Candidate
+    from sysml_graphrag.policy import Candidate
 
     row = Candidate(graph, encoder, tokenizer).prepare(args.question)
     write(args.out, row)

@@ -2,7 +2,7 @@
 import hashlib
 import re
 
-from candidate.retrieval.query_identity import IDENTIFIER
+from sysml_graphrag.retrieval.query_identity import IDENTIFIER
 
 REJECTED = {'unresolved', 'ambiguous', 'unsupported_reference_structure',
             'unsupported_target_structure'}

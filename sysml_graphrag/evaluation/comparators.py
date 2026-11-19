@@ -6,7 +6,7 @@ from collections import Counter
 import networkx as nx
 import numpy as np
 
-from candidate.retrieval.traversal import stringify_subgraph_triples
+from sysml_graphrag.retrieval.traversal import stringify_subgraph_triples
 
 
 def words(text):

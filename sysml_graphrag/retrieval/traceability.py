@@ -138,7 +138,7 @@ def retrieve_traceability(graph, query, identity, scores, intent, *, max_hops=4,
     if not seeds:
         return empty, [], {**metadata, 'status': grounding['status']}
     if intent in {'satisfaction', 'satisfaction_allocation'}:
-        from candidate.retrieval.satisfaction import retrieve_satisfaction
+        from sysml_graphrag.retrieval.satisfaction import retrieve_satisfaction
         selected, records, result = retrieve_satisfaction(graph, seeds, intent, max_paths)
         return selected, records, {**metadata, **result,
                                    'retained_paths': len(records),

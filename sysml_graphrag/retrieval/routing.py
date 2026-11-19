@@ -11,16 +11,16 @@ from typing import Dict, Any, List, Optional
 import networkx as nx
 
 # Imports from adjacent retrieval modules
-from candidate.retrieval.grounding import ground_terms_via_embeddings
-from candidate.retrieval.query_identity import check_query_identity
-from candidate.retrieval.composition import recognize_typed_composition, resolve_composition_identity, retrieve_typed_composition
-from candidate.retrieval.composition import recognize_scoped_inventory, resolve_inventory_identity, retrieve_scoped_inventory
-from candidate.retrieval.inventory_scope import confirm_inventory_scope, propose_inventory_clarification
-from candidate.retrieval.endpoint_focus import recognize_endpoint_focus, resolve_endpoint_focus
-from candidate.retrieval.allocation import recognize_allocation, retrieve_allocation
-from candidate.retrieval.action_order import recognize_action_order, retrieve_action_order
-from candidate.retrieval.traversal import SubgraphPruner, stringify_subgraph_markdown_tree
-from candidate.retrieval.traceability import recognize_traceability, retrieve_traceability
+from sysml_graphrag.retrieval.grounding import ground_terms_via_embeddings
+from sysml_graphrag.retrieval.query_identity import check_query_identity
+from sysml_graphrag.retrieval.composition import recognize_typed_composition, resolve_composition_identity, retrieve_typed_composition
+from sysml_graphrag.retrieval.composition import recognize_scoped_inventory, resolve_inventory_identity, retrieve_scoped_inventory
+from sysml_graphrag.retrieval.inventory_scope import confirm_inventory_scope, propose_inventory_clarification
+from sysml_graphrag.retrieval.endpoint_focus import recognize_endpoint_focus, resolve_endpoint_focus
+from sysml_graphrag.retrieval.allocation import recognize_allocation, retrieve_allocation
+from sysml_graphrag.retrieval.action_order import recognize_action_order, retrieve_action_order
+from sysml_graphrag.retrieval.traversal import SubgraphPruner, stringify_subgraph_markdown_tree
+from sysml_graphrag.retrieval.traceability import recognize_traceability, retrieve_traceability
 
 
 class QueryRouter:

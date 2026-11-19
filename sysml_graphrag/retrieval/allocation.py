@@ -1,9 +1,9 @@
 """Scoped lookup of written allocation statements in either direction."""
 import re
 
-from candidate.retrieval.query_identity import IDENTIFIER
-from candidate.retrieval.satisfaction import REJECTED, allocation_endpoints
-from candidate.retrieval.traceability import normalized_label
+from sysml_graphrag.retrieval.query_identity import IDENTIFIER
+from sysml_graphrag.retrieval.satisfaction import REJECTED, allocation_endpoints
+from sysml_graphrag.retrieval.traceability import normalized_label
 
 
 _PATH = IDENTIFIER + r'(?:\.' + IDENTIFIER + r')*'

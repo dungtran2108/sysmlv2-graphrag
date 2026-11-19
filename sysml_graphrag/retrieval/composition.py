@@ -6,8 +6,8 @@ inheritance or physical-composition inference. Dense anchors remain independent.
 import re
 import hashlib
 
-from candidate.retrieval.query_identity import IDENTIFIER
-from candidate.retrieval.traceability import normalized_label
+from sysml_graphrag.retrieval.query_identity import IDENTIFIER
+from sysml_graphrag.retrieval.traceability import normalized_label
 
 NAME = IDENTIFIER + r'(?:::' + IDENTIFIER + r')*'
 USAGE = r'(?P<usage_quote>`?)(?P<usage>' + NAME + r')(?P=usage_quote)'

@@ -5,7 +5,7 @@ import networkx as nx
 import torch
 from sentence_transformers import SentenceTransformer, util
 
-from candidate.retrieval.node_text import node_grounding_text, node_text_digest
+from sysml_graphrag.retrieval.node_text import node_grounding_text, node_text_digest
 
 
 def ground_terms_via_embeddings(

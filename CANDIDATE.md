@@ -28,8 +28,8 @@ From the checkout or extracted source snapshot, substitute the two local model
 directories. Choose new output filenames.
 
 ```text
-python -B -m candidate --graph examples/assembly-graph.json --encoder <encoder-directory> --tokenizer <tokenizer-directory> --question "Which part usages does DemoAssembly directly declare, and what are their declared types?" --out assembly-prompt.json
-python -B -m candidate --graph examples/assembly-graph.json --encoder <encoder-directory> --tokenizer <tokenizer-directory> --question "What is the declared type of sensorHead?" --out assembly-clarification.json
+python -B -m sysml_graphrag --graph examples/assembly/assembly-graph.json --encoder <encoder-directory> --tokenizer <tokenizer-directory> --question "Which part usages does DemoAssembly directly declare, and what are their declared types?" --out assembly-prompt.json
+python -B -m sysml_graphrag --graph examples/assembly/assembly-graph.json --encoder <encoder-directory> --tokenizer <tokenizer-directory> --question "What is the declared type of sensorHead?" --out assembly-clarification.json
 ```
 
 The first command should report `DIRECT_SCOPED` and `markdown_tree`. Its
@@ -37,7 +37,7 @@ evidence should cite the `sensorHead` usage and its `OpticalSensor` type.
 The second should report `CLARIFICATION_REQUIRED` and zero planned generator
 input, with `DemoAssembly::sensorHead` and `BackupAssembly::sensorHead` in
 the fixed response. The graph is a hand-authored synthetic projection, with
-locators into `examples/assembly.sysml`.
+locators into `examples/assembly/assembly.sysml`.
 
 ## External projections
 

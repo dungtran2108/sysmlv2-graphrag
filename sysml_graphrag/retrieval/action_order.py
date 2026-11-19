@@ -1,8 +1,8 @@
 """Scoped lookup of explicit, immediate action successions."""
 import re
 
-from candidate.retrieval.query_identity import IDENTIFIER
-from candidate.retrieval.traceability import normalized_label
+from sysml_graphrag.retrieval.query_identity import IDENTIFIER
+from sysml_graphrag.retrieval.traceability import normalized_label
 
 
 _ARGUMENT = r'(?:`' + IDENTIFIER + r'(?:::' + IDENTIFIER + r')*`|[\w :]+)'

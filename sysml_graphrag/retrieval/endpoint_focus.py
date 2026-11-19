@@ -5,7 +5,7 @@ Recognition covers complete request forms only; other questions keep their polic
 """
 import re
 
-from candidate.retrieval.query_identity import IDENTIFIER
+from sysml_graphrag.retrieval.query_identity import IDENTIFIER
 
 PATH = IDENTIFIER + r'(?:\.' + IDENTIFIER + r')+'
 QUOTED_PATH = r'(?:`' + PATH + r'`|' + PATH + r')'

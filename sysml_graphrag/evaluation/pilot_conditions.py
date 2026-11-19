@@ -1,9 +1,9 @@
 """Shared evidence selection and controlled response handling for pilot runs."""
 import time
 
-from candidate.evaluation.budget import Budget, COMPOSITION_PACKING, pack_evidence
-from candidate.evaluation.comparators import EvidenceIndex, graph_units
-from candidate.retrieval.composition import composition_packing_edges
+from sysml_graphrag.evaluation.budget import Budget, COMPOSITION_PACKING, pack_evidence
+from sysml_graphrag.evaluation.comparators import EvidenceIndex, graph_units
+from sysml_graphrag.retrieval.composition import composition_packing_edges
 
 
 _WHOLE_INVENTORIES = {
