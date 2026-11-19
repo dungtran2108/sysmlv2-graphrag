@@ -1,0 +1,91 @@
+{
+  "metadata": {
+    "projection_version": "synthetic-example-v1",
+    "diagnostic_only": false,
+    "grounding_text_version": "requirement-content-v1"
+  },
+  "nodes": [
+    {
+      "id": "DemoAssembly",
+      "name": "DemoAssembly",
+      "qualified_name": "Example::DemoAssembly",
+      "kind": "part def",
+      "declared": true,
+      "scope": "Example",
+      "file": "assembly.sysml",
+      "line": 2
+    },
+    {
+      "id": "demo-sensor",
+      "name": "sensorHead",
+      "qualified_name": "Example::DemoAssembly::sensorHead",
+      "kind": "part",
+      "declared": true,
+      "scope": "Example::DemoAssembly",
+      "file": "assembly.sysml",
+      "line": 3
+    },
+    {
+      "id": "BackupAssembly",
+      "name": "BackupAssembly",
+      "qualified_name": "Example::BackupAssembly",
+      "kind": "part def",
+      "declared": true,
+      "scope": "Example",
+      "file": "assembly.sysml",
+      "line": 5
+    },
+    {
+      "id": "backup-sensor",
+      "name": "sensorHead",
+      "qualified_name": "Example::BackupAssembly::sensorHead",
+      "kind": "part",
+      "declared": true,
+      "scope": "Example::BackupAssembly",
+      "file": "assembly.sysml",
+      "line": 6
+    },
+    {
+      "id": "sensor-type",
+      "name": "OpticalSensor",
+      "qualified_name": "Example::OpticalSensor",
+      "kind": "part def",
+      "declared": true,
+      "scope": "Example",
+      "file": "assembly.sysml",
+      "line": 8
+    }
+  ],
+  "edges": [
+    {
+      "source": "DemoAssembly",
+      "target": "demo-sensor",
+      "relationship": "owns",
+      "file": "assembly.sysml",
+      "line": 3
+    },
+    {
+      "source": "demo-sensor",
+      "target": "sensor-type",
+      "relationship": "typed_by",
+      "resolution_status": "compiler_resolved",
+      "file": "assembly.sysml",
+      "line": 3
+    },
+    {
+      "source": "BackupAssembly",
+      "target": "backup-sensor",
+      "relationship": "owns",
+      "file": "assembly.sysml",
+      "line": 6
+    },
+    {
+      "source": "backup-sensor",
+      "target": "sensor-type",
+      "relationship": "typed_by",
+      "resolution_status": "compiler_resolved",
+      "file": "assembly.sysml",
+      "line": 6
+    }
+  ]
+}
