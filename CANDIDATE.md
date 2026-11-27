@@ -1,18 +1,32 @@
 # Apollo and Vacuum candidate
 
-The candidate prepares an evidence pack for a single natural-language question.
-It checks projected identity, selects directly within a verified local
-declaration, and falls back to the frozen router for other questions. It
-preserves clarification stops. The pinned direct-selection path uses the
-original MiniLM reranker, top-100 cutoff, whole-record packer and 4,096-token
-Llama evidence cap. The complete prompt must fit a window of 8,192 tokens
-with 512 reserved for output.
+This package implements the Apollo and Vacuum Routed GraphRAG baseline
+`routed-reverse-allocation-2026-11-25`. It prepares evidence for one question
+against an ordered compiler projection.
 
-Ordinary local ownership, typing and connector questions use a Markdown tree.
-The tree is rendered from the records already admitted by the packer and
-checked against their directed edges and locators. Mixed and multi-step
-requests use triples. The CLI writes exact chat messages or a fixed response
-with token counts. It has no generation step.
+- The identity guard preserves fixed responses for ambiguous or unverified
+  references. Ordinary ownership, typing and connector questions can use
+  direct scoped selection when the projection verifies one declaration.
+- For deep retrieval, the policy can focus on verified typed composition,
+  written satisfaction or multi-scope harness wiring. It restores both
+  written roles and ownership for surviving binary connection, interface
+  and allocation relations and packs each restored relation as one unit.
+- For supported questions about requirements met by work assigned to a
+  component, the policy follows compiler-witnessed incoming allocations and
+  checks satisfaction in the correct typed scope. Whole traces compete with
+  the existing evidence pool. When scopes are ambiguous or the trace cannot
+  be verified, the router can return a fixed response with the available
+  source locators. Standalone allocation, typing and satisfaction requests
+  retain their normal routes.
+
+The pinned MiniLM reranker supplies up to 100 candidates to the whole-record
+packer. The Llama evidence cap is 4,096 tokens within an 8,192-token context,
+with 512 reserved for output. Ordinary direct-scoped evidence is rendered
+as a Markdown tree when its edges and locators can be checked against the
+admitted records. Mixed and multi-step requests use triples. The CLI
+prepares exact chat messages or a fixed response and reports both the
+prepared prompt size and the input tokens planned for sending. A fixed
+response has zero planned input tokens. The CLI runs offline.
 
 ## Offline example
 
@@ -45,9 +59,10 @@ Use the original compact projection JSON shape. The top-level fields are
 `metadata`, ordered `nodes` (each with an `id`), and ordered `edges`
 (each with source and target IDs and a `relationship`). Identity and
 route checks use projected qualified names, kinds and declared/scope fields.
-Evidence rendering also uses source paths, lines, assertions and role
-witnesses when present. Supply the compact graph produced by your compiler
-adapter. The example describes the minimum shape for the inventory route.
+Evidence rendering uses source paths, lines, assertions and written role
+witnesses. Reverse allocation requires compiler witness keys, resolved
+declaration chains and explicit satisfaction relationships. Supply the
+compact graph produced by your compiler adapter. The example describes the minimum shape for the inventory route.
 Java, model sources, compiler binaries and private experiment artifacts are
 separate inputs to the relevant workflows.
 

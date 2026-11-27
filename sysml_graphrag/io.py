@@ -33,6 +33,14 @@ def load_graph(path):
     return graph
 
 
+
+def graph_document(graph):
+    return {'metadata': dict(graph.graph),
+            'nodes': [{'id': node, **data} for node, data in graph.nodes(data=True)],
+            'edges': [{'source': source, 'target': target, **data}
+                      for source, target, data in graph.edges(data=True)]}
+
+
 def local_models(encoder_path, tokenizer_path):
     os.environ['HF_HUB_OFFLINE'] = os.environ['TRANSFORMERS_OFFLINE'] = '1'
     import torch

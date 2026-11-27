@@ -1,4 +1,4 @@
-"""Direct selection, frozen routing fallback and post-admission rendering."""
+"""Prepare Routed GraphRAG evidence and render the admitted records."""
 from collections import Counter
 import hashlib
 import re
@@ -8,12 +8,17 @@ from sysml_graphrag import tree_audit
 from sysml_graphrag.evaluation.budget import ChatTokenCounter, COMPOSITION_PACKING, messages_for
 from sysml_graphrag.evaluation.comparators import EvidenceIndex, graph_units
 from sysml_graphrag.evaluation.pilot_conditions import condition, rank_evidence
+from sysml_graphrag.io import graph_document
 from sysml_graphrag.retrieval.composition import composition_packing_edges
+from sysml_graphrag.retrieval.deep_route import select_deep_evidence
 from sysml_graphrag.retrieval.node_text import node_grounding_text, node_text_digest
 from sysml_graphrag.retrieval.query_identity import check_query_identity
+from sysml_graphrag.retrieval.reverse_allocation import select_reverse_allocation
 from sysml_graphrag.retrieval.routing import QueryRouter
 from sysml_graphrag.retrieval.traversal import SubgraphPruner, stringify_subgraph_markdown_tree
 
+BASELINE_VERSION = 'routed-reverse-allocation-2026-11-25'
+IDENTITY_STOPS = {'CLARIFICATION_REQUIRED', 'IDENTITY_UNVERIFIED', 'GROUNDED_INVENTORY_CLARIFICATION'}
 METHOD, CAP = 'graph_routed', 4096
 CONFIG = {
     'max_evidence_candidates': 100,
@@ -142,6 +147,33 @@ def direct(question, decision, graph, pruner, encoder):
                 ranking_embedding_diagnostics=index.embedding_diagnostics, retrieval_seconds=perf_counter()-start)
 
 
+def apply_reverse_allocation(graph, question, selection, renderer, encoder):
+    route = selection['router_result']
+    if route['route'] in IDENTITY_STOPS:
+        return selection, renderer, {'status': 'preserved_identity_stop'}
+    decision, records = select_reverse_allocation(graph, question)
+    status = decision['status']
+    if status == 'outside_intent':
+        return selection, renderer, decision
+    if status in {'no_trace', 'clarification'}:
+        stopped = {**route, 'route': status.upper(), 'execute_llm': False,
+                   'default_response': decision['response'],
+                   'selected_evidence': {'nodes': [], 'edges': [], 'records': []}, 'context_md': None}
+        return {**selection, 'ranked': [], 'priority_edges': [],
+                'ranking_embedding_diagnostics': None, 'router_result': stopped}, 'triples', decision
+
+    edges = {tuple(edge) for record in records for edge in record['edges']}
+    evidence = {**graph_document(graph.edge_subgraph(edges)), 'records': records}
+    available = {unit['id'] for unit in selection['ranked']}
+    pool = [{key: value for key, value in unit.items() if key != 'score'} for unit in selection['ranked']]
+    pool.extend(unit for unit in graph_units(evidence) if unit['id'] not in available)
+    index = EvidenceIndex(pool, encoder)
+    updated_route = {**route, 'route': 'BOUNDED_ALLOCATION_TRACE', 'execute_llm': True,
+                     'default_response': None, 'bounded_evidence': evidence}
+    return {**selection, 'ranked': index.rank(question), 'router_result': updated_route,
+            'ranking_embedding_diagnostics': index.embedding_diagnostics}, 'triples', decision
+
+
 def tree_prompt(row, graph, counter):
     """Render the frozen pack's exact records as one directed Markdown tree."""
     packed = row['packed']
@@ -178,6 +210,7 @@ def tree_prompt(row, graph, counter):
 def fit(row, counter):
     packed = row['packed']
     routed = row['router_result']
+    sends_prompt = routed is None or routed['execute_llm']
     rendered = counter.tokenizer.apply_chat_template(packed['messages'], tokenize=False, add_generation_prompt=True)
     assert packed['messages'] == messages_for(row['query'], packed['evidence'])
     assert counter.text(rendered) == counter.messages(packed['messages']) == packed['input_tokens']
@@ -185,10 +218,10 @@ def fit(row, counter):
     assert packed['input_tokens'] + packed['output_reserve'] <= packed['context_window']
     return dict(pass_fit=True, evidence_tokens=packed['evidence_tokens'],
                 input_tokens_if_sent=packed['input_tokens'],
-                input_tokens_to_send=packed['input_tokens'] if routed['execute_llm'] else 0,
+                input_tokens_to_send=packed['input_tokens'] if sends_prompt else 0,
                 reserved_output=packed['output_reserve'], context=packed['context_window'],
                 rendered_prompt_sha256=hashlib.sha256(rendered.encode('utf-8')).hexdigest(),
-                fixed_response=None if routed['execute_llm'] else routed['default_response'])
+                fixed_response=None if sends_prompt else routed['default_response'])
 
 
 class Candidate:
@@ -215,13 +248,17 @@ class Candidate:
             router = QueryRouter(pruner=pruner, grounded_inventory_clarification=False)
             selection = rank_evidence(question, METHOD, graph, self.vectors, self.encoder, router, {},
                                       self.node_digest)
+        selection = select_deep_evidence(graph, question, selection, self.encoder)
+        selection, renderer, branch_decision = apply_reverse_allocation(
+            graph, question, selection, decision['renderer'], self.encoder)
         query = dict(query=question, query_id=query_id, query_family_id=query_family_id or query_id,
                      model=model, partition=partition)
         row = condition(query, METHOD, selection, CAP, self.counter, CONFIG)
-        identity = row['router_result']['metadata']['query_identity']
-        if decision['query_identity'] != identity:
-            raise ValueError('Frozen identity guard and candidate scope disagree.')
-        row.update(arm='candidate', candidate_decision=decision, renderer=decision['renderer'])
+        # The fallback router can resolve identity through a specialized relationship.
+        if decision['root'] and decision['query_identity'] != row['router_result']['metadata']['query_identity']:
+            raise ValueError('Direct selection and the locality identity guard disagree.')
+        row.update(arm='candidate', baseline_version=BASELINE_VERSION, candidate_decision=decision,
+                   decision=branch_decision, renderer=renderer)
         if row['renderer'] == 'markdown_tree':
             row['tree_equivalence'] = tree_prompt(row, graph, self.counter)
         row.update(prompt_fit=fit(row, self.counter),

@@ -1,10 +1,10 @@
 # Apollo 11 source-to-answer walkthrough
 
-Start with the pinned Airbus Apollo 11 SysML v2 model. The walkthrough runs
-the SysML Pilot compiler, projects its source-backed elements and relations,
-and prepares an exact prompt with the same scoped retrieval policy used in
-the Apollo/Vacuum replay. The sample question asks for the interface type
-and both written endpoint paths of `ApolloSpacecraft::lesConnection`.
+Start with the pinned Airbus Apollo 11 SysML v2 model. The notebook runs
+the SysML Pilot compiler, builds a compact projection, and compares Text
+Hybrid, One-Hop, and the simplified repository's Routed GraphRAG candidate.
+The sample question asks for the interface type and both written endpoint
+paths of `ApolloSpacecraft::lesConnection`.
 
 ## Inputs
 
@@ -21,12 +21,28 @@ and both written endpoint paths of `ApolloSpacecraft::lesConnection`.
 
 ## Run
 
-Open [Apollo.ipynb](Apollo.ipynb) in Jupyter from the checkout and fill in
-the external paths. The notebook shows the compiler export, compact graph,
-route, evidence, citation, and exact messages. Use a new output directory
-outside this checkout and the input directories.
+Install JupyterLab in the environment with the candidate dependencies. Open
+[Apollo.ipynb](Apollo.ipynb) from this checkout and fill in the four paths in
+step 1. Step 2 compiles the model and builds the local indexes in a new
+temporary directory. Change `question` in step 3 and rerun from there.
+The notebook shows the chosen route, ranked record IDs, packed source evidence
+and input token counts. Inspect `results[method]['packed']['messages']` to see
+the exact messages. Each method gets 4,096 evidence tokens within the same
+8,192-token context window with 512 reserved for output. Arbitrary questions
+are unscored.
 
-The CLI runs the same steps from the checkout root.
+Allow several minutes for the first compile and CPU indexing. Keep the kernel
+open to reuse the projection and indexes when you change the question. The
+first question that uses the fallback router may also build node embeddings.
+MiniLM can truncate long units for ranking, while the packer sees each original
+unit and admits whole units under the Llama token budget.
+
+The notebook can also read the four setup paths from `SYSML_APOLLO_SOURCE`,
+`SYSML_PILOT_DIR`, `SYSML_ENCODER_DIR` and `SYSML_TOKENIZER_DIR`. Set
+`SYSML_DEMO_SCRATCH` to an existing external directory if you want to choose
+where it creates the temporary run folder.
+
+The CLI runs the compiler and the Routed GraphRAG arm from the checkout root.
 
 ```text
 python -B -m examples.apollo.demo --source <apollo-checkout> --pilot <pilot-sysml-directory> --encoder <minilm-directory> --tokenizer <llama-tokenizer-directory> --out <new-external-directory>
@@ -40,11 +56,11 @@ references in the declaration. The output includes `compiler.log`,
 `compiler-export.json`, `graph.json`, and `prompt.json`.
 
 Optional generation uses local Ollama at `127.0.0.1:11434`. Run the final
-notebook cell after setting `GENERATE = True`, or append `--generate` to the
+notebook cell after setting `generate = True`, or append `--generate` to the
 CLI command. The example verifies the installed `llama3.1:latest` digest
 listed in [inputs.json](inputs.json) and applies the replay's 8,192-token
-context and 512-token completion limit. It saves the answer and token
-telemetry. Use a tokenizer verified against the installed model for a
+context and 512-token completion limit. The notebook displays the answer and
+token telemetry. The CLI saves them. Use a tokenizer verified against the installed model for a
 matching input-token count. A fixed clarification stops before any call.
 
 The source model, compiler distribution, encoder, tokenizer, and Ollama
